@@ -3,14 +3,16 @@
  */
 public class Caesar implements Code{
 
+    public int key;
     public Caesar() {
+        this.key = 250;
     }
 
     public int Encode(int uncoded) {
-        return uncoded;
+        return ((uncoded + key)& 0xFF);
     }
 
     public int Decode(int coded) {
-        return coded;
+        return ((1 << 8) + coded - key) & 0xFF;
     }
 }

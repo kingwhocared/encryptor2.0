@@ -14,8 +14,10 @@ public class Model {
         switch (request) {
             case ENCRIPTION:
                 outputfile = inputfile + ".encrypted";
+                break;
             case DECRYPTION:
-                outputfile = inputfile.split("\\.")[0] + "_decrypted" + inputfile.split("\\.")[1];
+                outputfile = inputfile.split("\\.")[0] + "_decrypted." + inputfile.split("\\.")[1];
+                break;
         }
         return outputfile;
     }
