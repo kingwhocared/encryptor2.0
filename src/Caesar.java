@@ -4,8 +4,8 @@
 public class Caesar implements Code{
 
     public int key;
-    public Caesar() {
-        this.key = 250;
+    public Caesar(int key) {
+        this.key = key;
     }
 
     public int Encode(int uncoded) {

@@ -9,7 +9,7 @@ public class Model {
     }
 
 
-    private static String generateOutPutFileName(String inputfile, View.UserRequest request) {
+    private static String generateOutPutFileName(String inputfile, View.MainUserRequest request) {
         String outputfile = inputfile;
         switch (request) {
             case ENCRIPTION:

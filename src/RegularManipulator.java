@@ -3,7 +3,7 @@
  */
 public class RegularManipulator extends FileManipulator {
     Code code;
-    public RegularManipulator(Code code, View.UserRequest request) {
+    public RegularManipulator(Code code, View.MainUserRequest request) {
         this.code = code;
         this.request = request;
     }

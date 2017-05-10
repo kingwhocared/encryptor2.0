@@ -6,7 +6,7 @@ import java.io.InputStream;
  * Created by stannis on 09/05/17.
  */
 public abstract class FileManipulator {
-    protected View.UserRequest request;
+    protected View.MainUserRequest request;
     public void ManipulateFile(String fileinput, String fileoutput) {
         try {
             ByteManipulator manipulator = (x) -> x;
