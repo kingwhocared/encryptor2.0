@@ -35,8 +35,8 @@ public abstract class FileManipulator {
         }
     }
 
-    abstract int EncodeByte(int to_encode);
-    abstract int DecodeByte(int to_decode);
+    protected abstract int EncodeByte(int to_encode);
+    protected abstract int DecodeByte(int to_decode);
 
     interface ByteManipulator {
         int manipulate(int a);

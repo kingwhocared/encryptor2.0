@@ -66,6 +66,32 @@ public class View {
     }
 
     static Code GetRequestCode(MainUserRequest mainUserRequest) {
+        System.out.println("Choose Encryption Algorithem:");
+        System.out.println("1). Caesar");
+        System.out.println("2). Multplication");
+        System.out.println("3). XOR");
+        Scanner reader = new Scanner(System.in);
+        int enc_alg_choice = Integer.parseInt(reader.nextLine());
+        int key;
+        Code code;
+        switch (enc_alg_choice) {
+            case 1:
+                key = GetSingleKey(mainUserRequest);
+                code = new Caesar(key);
+                return code;
+            case 2:
+                key = GetSingleKey(mainUserRequest);
+                code = new Multiplication(key);
+                return code;
+            case 3:
+                key = GetSingleKey(mainUserRequest);
+                code = new XOR(key);
+                return code;
+        }
+        throw new RuntimeException("invalid encryption algorithem choice");
+    }
+
+    static int GetSingleKey(MainUserRequest mainUserRequest) {
         int key = 0;
         switch (mainUserRequest) {
             case DECRYPTION:
@@ -75,9 +101,6 @@ public class View {
                 key = GetKeyForEncryption();
                 break;
         }
-
-        Code code = new Caesar(key);
-        return code;
+        return key;
     }
-
 }
