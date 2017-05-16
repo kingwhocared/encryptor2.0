@@ -9,12 +9,12 @@ public class RegularManipulator extends FileManipulator {
     }
 
     @Override
-    int EncodeByte(int to_encode) {
+    protected int EncodeByte(int to_encode) {
         return code.Encode(to_encode);
     }
 
     @Override
-    int DecodeByte(int to_decode) {
+    protected int DecodeByte(int to_decode) {
         return code.Decode(to_decode);
     }
 }

@@ -7,6 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class View {
     public enum MainUserRequest {ENCRIPTION, DECRYPTION}
+    public enum KeyType {SINGLE_KEY, DUEL_KEY}
 
     public static UserRequestMission GetUserRequest() {
         MainUserRequest mainUserRequest = GetMissionObjective();
@@ -41,16 +42,31 @@ public class View {
         return mainUserRequest;
     }
 
-    static int GetKeyForDecryption() {
+    static Key GetKeyForDecryption() {
         Scanner reader = new Scanner(System.in);
-        System.out.println("Insert key for decryption...");
-        return Integer.parseInt(reader.nextLine());
+        System.out.println("Insert path of decryption key...");
+        String path = reader.nextLine();
+        return Key.ReadFromFile(path);
     }
 
-    static int GetKeyForEncryption() {
-        int randomNum = ThreadLocalRandom.current().nextInt(1, (1 << 8));
-        System.out.println("Key Generated for encryption: " + randomNum);
-        return randomNum;
+    static Key GetKeyForEncryption(KeyType keyType) {
+        Key key = null;
+
+        switch (keyType) {
+            case SINGLE_KEY:
+                int randomNum = ThreadLocalRandom.current().nextInt(1, (1 << 8));
+                System.out.println("Key Generated for encryption: " + randomNum);
+                key = new SingleEncryptionKey(randomNum);
+                break;
+            case DUEL_KEY:
+                int randomNum1 = ThreadLocalRandom.current().nextInt(1, (1 << 8));
+                int randomNum2 = ThreadLocalRandom.current().nextInt(1, (1 << 8));
+                System.out.println("Key Generated for encryption: " + randomNum1 + ", " + randomNum2);
+                key = new DuelEncriptionKey(randomNum1, randomNum2);
+                break;
+        }
+        key.WriteToFile("key.bin");
+        return key;
     }
 
     static String GetUserRequestFilePath() {
@@ -76,23 +92,23 @@ public class View {
         Code code;
         switch (enc_alg_choice) {
             case 1:
-                key = GetSingleKey(mainUserRequest);
+                key = GetKey(mainUserRequest);
                 code = new Caesar(key);
                 return code;
             case 2:
-                key = GetSingleKey(mainUserRequest);
+                key = GetKey(mainUserRequest);
                 code = new Multiplication(key);
                 return code;
             case 3:
-                key = GetSingleKey(mainUserRequest);
+                key = GetKey(mainUserRequest);
                 code = new XOR(key);
                 return code;
         }
         throw new RuntimeException("invalid encryption algorithem choice");
     }
 
-    static int GetSingleKey(MainUserRequest mainUserRequest) {
-        int key = 0;
+    static Key GetKey(MainUserRequest mainUserRequest) {
+        Key key = null;
         switch (mainUserRequest) {
             case DECRYPTION:
                 key = GetKeyForDecryption();

@@ -13,9 +13,9 @@ public class EncryptionProcess {
     }
 
     public void BeginFileManipulationProcess(String file_input, String file_output) {
+        this.file_input = file_input;
         this.BeginEvent();
         this.file_manipulator.ManipulateFile(file_input, file_output);
-        this.file_input = file_input;
         this.EndEvent();
     }
 
@@ -26,7 +26,7 @@ public class EncryptionProcess {
 
     private void EndEvent() {
         Instant end_time = Instant.now();
-        System.out.println("Succesfully analized file: " + this.file_input
-            + "\nTime taken: " + Duration.between(this.begin_time, end_time).toString());
+        System.out.println("Successfully analyzed file: " + this.file_input
+            + "\nTime taken: " + Duration.between(this.begin_time, end_time).getSeconds() + " seconds");
     }
 }

@@ -5,7 +5,10 @@ public class Model {
 
     public static void DoUserRequest(UserRequestMission userRequestMission){
         String outputfile = generateOutPutFileName(userRequestMission.missionPath, userRequestMission.request);
-        userRequestMission.missionFileHandler.ManipulateFile(userRequestMission.missionPath, outputfile);
+
+        EncryptionProcess encryptionProcess = new EncryptionProcess(userRequestMission.missionFileHandler);
+
+        encryptionProcess.BeginFileManipulationProcess(userRequestMission.missionPath,outputfile);
     }
 
 
