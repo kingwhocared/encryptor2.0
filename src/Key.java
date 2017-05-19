@@ -4,6 +4,10 @@ import java.io.*;
  * Created by stannis on 15/05/17.
  */
 public abstract class Key {
+    public Key() {
+        this.WriteToFile("key.bin");
+    }
+
     static public Key ReadFromFile(String key_file_name) {
         try {
             FileInputStream fileIn = new FileInputStream(key_file_name);
@@ -17,6 +21,7 @@ public abstract class Key {
             return null;
         }
     }
+
 
     public void WriteToFile(String key_file_name) {
         try {

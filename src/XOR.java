@@ -3,8 +3,8 @@
  */
 public class XOR implements Code{
     int key;
-    public XOR(int key) {
-        this.key = key;
+    public XOR(Key key) {
+        this.key = ((SingleEncryptionKey) key).key;
     }
 
     @Override

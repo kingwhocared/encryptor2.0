@@ -1,18 +1,18 @@
 /**
  * Created by stannis on 12/05/17.
  */
-public class SplitFileManipulator {
+public class SplitEncryptionCode implements Code {
     Code code1;
     Code code2;
     int i;
 
-    public SplitFileManipulator(Code code1, Code code2) {
+    public SplitEncryptionCode(Code code1, Code code2) {
         this.code1 = code1;
         this.code2 = code2;
         this.i = 0;
     }
 
-    protected int EncodeByte(int to_encode) {
+    public int Encode(int to_encode) {
         i ^= 1;
         switch (this.i) {
             case 0:
@@ -23,7 +23,7 @@ public class SplitFileManipulator {
         throw new RuntimeException("This should not happen");
     }
 
-    protected int DecodeByte(int to_decode) {
+    public int Decode(int to_decode) {
         i ^= 1;
         switch (this.i) {
             case 0:
@@ -33,4 +33,5 @@ public class SplitFileManipulator {
         }
         throw new RuntimeException("This should not happen");
     }
+
 }

@@ -3,10 +3,11 @@
  */
 public class Multiplication implements Code {
     int key;
-    public Multiplication(int key) {
-        if (key % 2 == 0)
+    public Multiplication(Key key) {
+        int the_key = ((SingleEncryptionKey) key).key;
+        if (the_key % 2 == 0)
             throw new RuntimeException("Bad key for multiplication code");
-        this.key = key;
+        this.key = the_key;
     }
 
     public int Encode(int uncoded) {

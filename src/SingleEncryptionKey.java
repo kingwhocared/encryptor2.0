@@ -8,6 +8,7 @@ public class SingleEncryptionKey extends Key {
     public int key;
 
     public SingleEncryptionKey(int key) {
+        super();
         this.key = key;
     }
 

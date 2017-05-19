@@ -5,8 +5,22 @@ import java.io.InputStream;
 /**
  * Created by stannis on 09/05/17.
  */
-public abstract class FileManipulator {
+public class FileManipulator {
     protected View.MainUserRequest request;
+    Code code;
+    public FileManipulator(Code code, View.MainUserRequest request) {
+        this.code = code;
+        this.request = request;
+    }
+
+    protected int EncodeByte(int to_encode) {
+        return code.Encode(to_encode);
+    }
+
+    protected int DecodeByte(int to_decode) {
+        return code.Decode(to_decode);
+    }
+
     public void ManipulateFile(String fileinput, String fileoutput) {
         try {
             ByteManipulator manipulator = (x) -> x;
@@ -34,9 +48,6 @@ public abstract class FileManipulator {
             System.out.println("Failure. Exception thrown in i/o.");
         }
     }
-
-    protected abstract int EncodeByte(int to_encode);
-    protected abstract int DecodeByte(int to_decode);
 
     interface ByteManipulator {
         int manipulate(int a);
