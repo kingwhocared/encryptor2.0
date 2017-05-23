@@ -20,4 +20,5 @@ public class DoubleEncryptionCode implements Code {
         return code1.Decode(code2.Decode(to_decode));
     }
 
+
 }

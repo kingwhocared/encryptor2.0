@@ -4,6 +4,7 @@
 public class Caesar implements Code{
 
     public int key;
+
     public Caesar(Key key) {
         this.key = ((SingleEncryptionKey) key).key;
     }
@@ -15,4 +16,5 @@ public class Caesar implements Code{
     public int Decode(int coded) {
         return ((1 << 8) + coded - key) & 0xFF;
     }
+
 }

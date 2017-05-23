@@ -15,6 +15,7 @@ public class View {
 
         Code code = GetRequestCode(mainUserRequest);
 
+
         FileManipulator manipulator = new FileManipulator(code, mainUserRequest);
         UserRequestMission userRequestMission = new UserRequestMission(manipulator, filepath, mainUserRequest);
         return userRequestMission;
@@ -65,7 +66,7 @@ public class View {
                 key = new DuelEncriptionKey(randomNum1, randomNum2);
                 break;
         }
-        key.WriteToFile("key.bin");
+        key.WriteToFile();
         return key;
     }
 
@@ -82,9 +83,10 @@ public class View {
     }
 
     static Code GetRequestCode(MainUserRequest mainUserRequest) {
-        System.out.println("Choose Encryption Algorithem:");
+        System.out.println("Choose Encryption Algorithm:");
         System.out.println("1). Simple Encryption");
         System.out.println("2). Duel Encryption");
+        System.out.println("3). Reverse Encryption");
         Scanner reader = new Scanner(System.in);
         Key key;
         int enc_alg_choice = Integer.parseInt(reader.nextLine());
@@ -95,12 +97,14 @@ public class View {
             case 2:
                 key = GetKey(mainUserRequest, KeyType.DUEL_KEY);
                 return GetDuelCode(mainUserRequest, key);
+            case 3:
+                return new ReverseEncryptionCode(GetRequestCode(mainUserRequest));
         }
-        throw new RuntimeException("invalid encryption algorithem choice");
+        throw new RuntimeException("invalid encryption Algorithm choice");
     }
 
     static Code GetSimpleCode(MainUserRequest mainUserRequest, Key key) {
-        System.out.println("Choose Encryption Algorithem:");
+        System.out.println("Choose Encryption Algorithm:");
         System.out.println("1). Caesar");
         System.out.println("2). Multplication");
         System.out.println("3). XOR");
@@ -118,11 +122,11 @@ public class View {
                 code = new XOR(key);
                 return code;
         }
-        throw new RuntimeException("invalid encryption algorithem choice");
+        throw new RuntimeException("invalid encryption Algorithm choice");
     }
 
     static Code GetDuelCode(MainUserRequest mainUserRequest, Key key) {
-        System.out.println("Choose Duel Encryption Algorithem:");
+        System.out.println("Choose Duel Encryption Algorithm:");
         System.out.println("1). Double Encryption");
         System.out.println("2). Split Encryption");
         Scanner reader = new Scanner(System.in);
@@ -141,7 +145,7 @@ public class View {
             case 2:
                 return new SplitEncryptionCode(code1, code2);
         }
-        throw new RuntimeException("invalid encryption algorithem choice");
+        throw new RuntimeException("invalid encryption Algorithm choice");
     }
 
     static Key GetKey(MainUserRequest mainUserRequest, KeyType keyType) {
