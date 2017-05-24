@@ -6,9 +6,9 @@ import java.io.InputStream;
  * Created by stannis on 09/05/17.
  */
 public class FileManipulator {
-    protected View.MainUserRequest request;
+    protected View.UserRequestObjective request;
     Code code;
-    public FileManipulator(Code code, View.MainUserRequest request) {
+    public FileManipulator(Code code, View.UserRequestObjective request) {
         this.code = code;
         this.request = request;
     }
@@ -25,7 +25,7 @@ public class FileManipulator {
         try {
             ByteManipulator manipulator = (x) -> x;
             switch (request) {
-                case ENCRIPTION:
+                case ENCRYPTION:
                     manipulator = (x) -> {return EncodeByte(x);};
                     break;
                 case DECRYPTION:
