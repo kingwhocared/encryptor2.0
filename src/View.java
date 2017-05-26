@@ -28,6 +28,7 @@ public class View {
         }
         throw new RuntimeException();
     }
+
     public static UserRequestMission GetUserRequest() {
         UserRequestObjective userRequestObjective = GetMissionObjective();
         String target_path = GetUserRequestFilePath();
@@ -92,7 +93,7 @@ public class View {
         String filepath;
         Scanner reader = new Scanner(System.in);
         do {
-            System.out.println("Enter file path:");
+            System.out.println("Enter target path:");
             filepath = reader.nextLine();
             varTmpDir = new File(filepath);
         } while (! (varTmpDir.exists()));

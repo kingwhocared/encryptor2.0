@@ -1,18 +1,32 @@
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
+import java.lang.Thread.*;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by stannis on 09/05/17.
  */
 public class Model {
 
+    private static LinkedList<Thread> threads;
+
     public static void DoUserRequest(UserRequestMission userRequestMission){
+        threads = new LinkedList<Thread>();
         switch (userRequestMission.targetType) {
             case SINGLE_FILE:
                 String outputfile = generateOutPutFileNameSingleFileTarget(userRequestMission.missionPath, userRequestMission.request);
                 EncryptionProcess encryptionProcess = new EncryptionProcess(userRequestMission.missionFileHandler);
                 encryptionProcess.BeginFileManipulationProcess(userRequestMission.missionPath,outputfile);
                 return;
+            case FOLDER_SYNC:
+                break;
+            case FOLDER_ASYNC:
+                break;
             default:
                 HandleFile file_handler = null;
                 switch (userRequestMission.targetType) {
@@ -26,13 +40,20 @@ public class Model {
                 Instant begin_time = Instant.now();
                 System.out.println("Beginning to work on the directory...");
                 String directory_input_path = userRequestMission.missionPath;
+                createOutputDirectory(directory_input_path, userRequestMission.request);
                 File[] files = new File(directory_input_path).listFiles();
                 for (File file : files) {
-                    if (file.isDirectory()) {
-                        String input = file.getName();
-                        String ouput = generateOutPutFileDirectoryTarget(input, userRequestMission.request);
-                        file_handler.Handle(userRequestMission.missionFileHandler, input, ouput);
+                    if (! file.isDirectory()) {
+                        String input = file.getAbsolutePath();
+                        String output = generateOutPutFileDirectoryTarget(input, userRequestMission.request);
+                        file_handler.Handle(userRequestMission.missionFileHandler, input, output);
                     }
+                }
+
+                for (Thread thread : threads) {
+                    try {
+                        thread.join();
+                    }catch (Throwable throwable) {}
                 }
                 System.out.println("Finished working on the directory.");
                 Instant end_time = Instant.now();
@@ -56,16 +77,37 @@ public class Model {
         return outputfile;
     }
 
-    private static String generateOutPutFileDirectoryTarget(String inputfile, View.UserRequestObjective request) {
-        String outputfile = inputfile;
-        switch (request) {
+    private static void createOutputDirectory(String input, View.UserRequestObjective goal) {
+        String output_dir_name = null;
+        switch (goal) {
             case ENCRYPTION:
-                outputfile = inputfile + ".encrypted";
+                output_dir_name = "encrypted";
                 break;
             case DECRYPTION:
-                outputfile = inputfile.split("\\.")[0] + "_decrypted." + inputfile.split("\\.")[1];
+                output_dir_name = "decrypted";
                 break;
         }
+        String new_dir = Paths.get(input).getParent().toString() + "/" + output_dir_name + "/";
+        try {
+            Files.createDirectories(Paths.get(new_dir));
+        }
+        catch (Throwable poop) {
+            throw new RuntimeException();
+        }
+        return;
+    }
+
+    private static String generateOutPutFileDirectoryTarget(String inputfile, View.UserRequestObjective request) {
+        String new_dir_name = null;
+        switch (request) {
+            case ENCRYPTION:
+                new_dir_name = "encrypted";
+                break;
+            case DECRYPTION:
+                new_dir_name = "decrypted";
+                break;
+        }
+        String outputfile = Paths.get(inputfile).getParent().getParent().toString() + "/" + new_dir_name + "/" + (new File(inputfile).getName());
         return outputfile;
     }
 
@@ -75,7 +117,7 @@ public class Model {
     }
 
     private static void handle_async(FileManipulator fileManipulator, String file_input, String file_output) {
-        new FileHandler(fileManipulator,file_input,file_output).run();
+        new FileHandler(fileManipulator,file_input,file_output).start();
     }
 
     private interface HandleFile {
@@ -94,6 +136,7 @@ public class Model {
         }
 
         public void run() {
+            threads.add(this);
             EncryptionProcess encryptionProcess = new EncryptionProcess(fileManipulator);
             encryptionProcess.BeginFileManipulationProcess(input,output);
         }

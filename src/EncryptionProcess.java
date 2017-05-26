@@ -4,20 +4,24 @@
 import java.time.Duration;
 import java.time.Instant;
 
-public class EncryptionProcess {
-    private FileManipulator file_manipulator;
-    private Instant begin_time;
-    private String file_input;
+public abstract class EncryptionProcess {
+    protected FileManipulator file_manipulator;
+    protected Instant begin_time;
+    protected String file_input;
+
     public EncryptionProcess(FileManipulator file_manipulator) {
         this.file_manipulator = file_manipulator;
     }
 
-    public void BeginFileManipulationProcess(String file_input, String file_output) {
+    public Thread BeginFileManipulationProcess(String file_input, String file_output) {
         this.file_input = file_input;
         this.BeginEvent();
-        this.file_manipulator.ManipulateFile(file_input, file_output);
+        Thread thread = this.BeginManipulation(file_input, file_output);
         this.EndEvent();
+        return thread;
     }
+
+    abstract Thread BeginManipulation(String file_input, String file_output);
 
     private void BeginEvent() {
         this.begin_time = Instant.now();
