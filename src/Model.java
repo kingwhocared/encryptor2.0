@@ -20,23 +20,11 @@ public class Model {
         switch (userRequestMission.targetType) {
             case SINGLE_FILE:
                 String outputfile = generateOutPutFileNameSingleFileTarget(userRequestMission.missionPath, userRequestMission.request);
-                EncryptionProcess encryptionProcess = new EncryptionProcess(userRequestMission.missionFileHandler);
+                EncryptionProcess encryptionProcess = new SyncedEncryptionProcess(userRequestMission.missionFileHandler);
                 encryptionProcess.BeginFileManipulationProcess(userRequestMission.missionPath,outputfile);
                 return;
             case FOLDER_SYNC:
-                break;
             case FOLDER_ASYNC:
-                break;
-            default:
-                HandleFile file_handler = null;
-                switch (userRequestMission.targetType) {
-                    case FOLDER_SYNC:
-                        file_handler = (x,y,z) -> {handle_sync(x,y,z);};
-                        break;
-                    case FOLDER_ASYNC:
-                        file_handler = (x,y,z) -> {handle_async(x,y,z);};
-                        break;
-                }
                 Instant begin_time = Instant.now();
                 System.out.println("Beginning to work on the directory...");
                 String directory_input_path = userRequestMission.missionPath;
@@ -46,10 +34,11 @@ public class Model {
                     if (! file.isDirectory()) {
                         String input = file.getAbsolutePath();
                         String output = generateOutPutFileDirectoryTarget(input, userRequestMission.request);
-                        file_handler.Handle(userRequestMission.missionFileHandler, input, output);
+                        threads.add(GenerateHandler(userRequestMission.targetType,
+                                userRequestMission.missionFileHandler).
+                                BeginFileManipulationProcess(input, output));
                     }
                 }
-
                 for (Thread thread : threads) {
                     try {
                         thread.join();
@@ -62,6 +51,16 @@ public class Model {
         }
 
 
+    }
+
+    private static EncryptionProcess GenerateHandler(UserRequestMission.UserRequestTargetType type, FileManipulator manipulator) {
+        switch (type) {
+            case FOLDER_SYNC:
+                return new SyncedEncryptionProcess(manipulator);
+            case FOLDER_ASYNC:
+                return new ASyncEncryptionProcess(manipulator);
+        }
+        throw new RuntimeException("The iron throne is mine by right!");
     }
 
     private static String generateOutPutFileNameSingleFileTarget(String inputfile, View.UserRequestObjective request) {
@@ -111,34 +110,4 @@ public class Model {
         return outputfile;
     }
 
-    private static void handle_sync(FileManipulator fileManipulator, String file_input, String file_output) {
-        EncryptionProcess encryptionProcess = new EncryptionProcess(fileManipulator);
-        encryptionProcess.BeginFileManipulationProcess(file_input,file_output);
-    }
-
-    private static void handle_async(FileManipulator fileManipulator, String file_input, String file_output) {
-        new FileHandler(fileManipulator,file_input,file_output).start();
-    }
-
-    private interface HandleFile {
-        void Handle(FileManipulator fileManipulator, String file_input, String file_output);
-    }
-
-    private static class FileHandler extends Thread {
-        FileManipulator fileManipulator;
-        String input;
-        String output;
-
-        public FileHandler(FileManipulator fileManipulator, String input, String output) {
-            this.fileManipulator = fileManipulator;
-            this.input = input;
-            this.output = output;
-        }
-
-        public void run() {
-            threads.add(this);
-            EncryptionProcess encryptionProcess = new EncryptionProcess(fileManipulator);
-            encryptionProcess.BeginFileManipulationProcess(input,output);
-        }
-    }
 }

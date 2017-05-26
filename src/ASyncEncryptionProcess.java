@@ -1,3 +1,6 @@
+import java.time.Duration;
+import java.time.Instant;
+
 /**
  * Created by stannis on 26/05/17.
  */
@@ -8,13 +11,20 @@ public class ASyncEncryptionProcess extends EncryptionProcess {
     }
 
     @Override
+    public Thread BeginFileManipulationProcess(String file_input, String file_output) {
+        this.file_input = file_input;
+        Thread thread = this.BeginManipulation(file_input, file_output);
+        return thread;
+    }
+
+    @Override
     Thread BeginManipulation(String file_input, String file_output) {
         Thread thread = new FileHandler(this.file_manipulator, file_input, file_output);
         thread.start();
         return thread;
     }
 
-    private static class FileHandler extends Thread {
+    private class FileHandler extends Thread {
         FileManipulator fileManipulator;
         String input;
         String output;
